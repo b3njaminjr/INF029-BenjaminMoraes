@@ -9,4 +9,10 @@ typedef struct {
     int ativo;
 } Professor;
 
+void cadastrarProfessores(Professor listaProfessores[], int *qtdProfessores);
+void listarProfessores(Professor listaProfessores[], int qtdProfessores);
+void atualizarProfessores(Professor listaProfessores[], int qtdProfessores);
+void excluirProfessores(Professor listaProfessores[], int *qtdProfessores);
+
+
 #endif // PROFESSOR_H

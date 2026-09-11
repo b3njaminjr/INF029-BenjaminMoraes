@@ -1,20 +1,13 @@
 #include <stdio.h>
-
-#define TAM_ALUNO 3
-
-typedef struct { 
-    int matricula;
-    char sexo;
-    int ativo;
-} Aluno;
+#include "aluno.h"
+#include "professor.h"
+#include "disciplina.h"
 
 int main(void) {
-
     Aluno listaAlunos[TAM_ALUNO];
     int opcao;
     int qtdAluno = 0;
-    
-    int sair = 0; // falso
+    int sair = 0;
 
     while (!sair) {
         printf("Projeto Escola\n");
@@ -25,140 +18,125 @@ int main(void) {
 
         scanf("%d", &opcao);
 
-        switch(opcao) {
-            case 0: {
+        switch (opcao) {
+            case 0:
                 sair = 1;
                 break;
-            }
-            case 1: {
-                printf("Modulo Aluno\n");
-                int sairAluno = 0; // falso
-                int opcaoAluno;
-                while(!sairAluno) {
-                    printf("0- Voltar\n");
-                    printf("1- Cadastrar Aluno\n");
-                    printf("2- Listar Aluno\n");
-                    printf("3- Atualizar Aluno\n");
-                    printf("4- Excluir Aluno\n");
 
-                    scanf("%d", &opcaoAluno);
-                    
+            case 1: {
+                printf("\n====== Modulo Aluno ======\n");
+                int sairAluno = 0;
+                int opcaoAluno;
+
+                while (!sairAluno) {
+                    opcaoAluno = menuAluno();
+
                     switch (opcaoAluno) {
-                        case 0: {
+                        case 0:
                             sairAluno = 1;
                             break;
-                        }
-                        case 1: {
-                            printf("Cadastrar Aluno\n");
-                            if (qtdAluno == TAM_ALUNO) {
-                                printf("Lista de alunos cheia\n");
-                            } else {
-                                printf("Digite a matricula: ");
-                                int matricula;
-                                scanf("%d", &matricula);
 
-                                if(matricula < 0) {
-                                    printf("Matricula invalida\n");
-                                } else {
-                                    listaAlunos[qtdAluno].matricula = matricula;
-                                    listaAlunos[qtdAluno].ativo = 1;
-                                    qtdAluno++;
-                                    printf("Aluno cadastrado com sucesso\n");
-                                }
-                            }
+                        case 1:
+                            printf("Cadastrar Aluno\n");
+                            cadastrarAluno(listaAlunos, &qtdAluno);
                             break;
-                        }
-                        case 2: {
+
+                        case 2:
                             printf("Listar Aluno\n");
-                            if(qtdAluno == 0) {
-                                printf("Lista aluno vazia\n");
-                            } else {
-                                for(int i = 0; i < qtdAluno; i++) {
-                                    if (listaAlunos[i].ativo == 1) {
-                                        printf("Aluno %d: %d\n", i + 1, listaAlunos[i].matricula);
-                                    }
-                                }
-                            }
+                            listarAlunos(listaAlunos, qtdAluno);
                             break;
-                        }
-                        case 3: {
+
+                        case 3:
                             printf("Atualizar Aluno\n");
-                            printf("Digite a matricula: ");
-                            int matricula;
-                            scanf("%d", &matricula);
-                            int achou = 0;
-                            if(matricula < 0) {
-                                printf("Matricula invalida\n");
-                            } else {
-                                for(int i = 0; i < qtdAluno; i++) {
-                                   if(matricula == listaAlunos[i].matricula && listaAlunos[i].ativo == 1) {
-                                        printf("Digite a nova matricula: ");
-                                        int novaMatricula;
-                                        scanf("%d", &novaMatricula);
-                                        listaAlunos[i].matricula = novaMatricula;
-                                        achou = 1;
-                                        break;
-                                    }
-                                }
-                                if(achou) {
-                                    printf("Aluno atualizado com sucesso\n");
-                                } else {
-                                    printf("Matricula inexsistente\n");
-                                }
-                            }
+                            atualizarAluno(listaAlunos, qtdAluno);
                             break;
-                        }
-                        case 4: {
+
+                        case 4:
                             printf("Excluir Aluno\n");
-                            printf("Digite a matricula: ");
-                            int matricula;
-                            scanf("%d", &matricula);
-                            int achou = 0;
-                            if(matricula < 0) {
-                                printf("Matricula invalida\n");
-                            } else {
-                                for(int i = 0; i < qtdAluno; i++) {
-                                   if(matricula == listaAlunos[i].matricula) {
-                                        listaAlunos[i].ativo = -1;
-                                        for(int j = i; j < qtdAluno - 1 ; j++) { // shift
-                                            listaAlunos[j] = listaAlunos[j + 1];
-                                        }
-                                        qtdAluno--;
-                                        achou = 1;
-                                        break;
-                                    }
-                                }
-                                if(achou) {
-                                    printf("Aluno excluido com sucesso\n");
-                                } else {
-                                    printf("Matricula inexsistente\n");
-                                }
-                            }
+                            excluirAluno(listaAlunos, &qtdAluno);
                             break;
-                        }
-                        default: {
+
+                        default:
                             printf("Opcao invalida\n");
                             break;
-                        }
                     }
                 }
                 break;
             }
 
             case 2: {
-                printf("Modulo Professor\n");
-                break;
-            }
+                printf("====== Modulo Professor ======\n");
+                int sairProfessor = 0;
+                int opcaoProfessor;
 
+                while(!sairProfessor) {
+                    opcaoProfessor = menuProfessor();
+
+                    switch (opcaoProfessor) {
+                        case 0: 
+                            sairProfessor = 1;
+                            break;
+
+                        case 1:
+                            printf("Cadastrar Professor\n");
+                            break;
+
+                        case 2:
+                            printf("Listar Professor\n");
+                            break;
+
+                        case 3: 
+                            printf("Atualizar Professor\n");
+                            break;
+
+                        case 4:
+                            printf("Excluir Professor\n");
+                            break;
+                            
+                        default:
+                            printf("Opcao invalida\n");
+                            break;
+                    }
+                }
+                break;
+            }
+            
             case 3: {
-                printf("Modulo Disciplina\n");
+                printf("====== Modulo Disciplina ======\n");
+                int sairDisciplina = 0;
+                int opcaoDisciplina;
+
+                while(!sairDisciplina) {
+                    opcaoDisciplina = menuDisciplina();
+
+                    switch (opcaoDisciplina) {
+                        case 0: 
+                            sairDisciplina = 1;
+                            break;
+
+                        case 1:
+                            printf("Cadastrar Disciplina\n");
+                            break;
+
+                        case 2:
+                            printf("Listar Disciplina\n");
+                            break;
+
+                        case 3:
+                            printf("Atualizar Disciplina\n");
+                            break;
+
+                        case 4:
+                            printf("Excluir Disciplina\n");
+                            break;
+
+                        default:
+                            printf("Opcao invalida\n");
+                            break;
+                    }
+                }
                 break;
             }
-            default: {
-                printf("Opcao invalida\n");
-                break;
-            }
-        }
     }
 
     return 0;
