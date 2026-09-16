@@ -9,6 +9,7 @@ typedef struct {
     int ativo;
 } Professor;
 
+int menuProfessor(void);
 void cadastrarProfessores(Professor listaProfessores[], int *qtdProfessores);
 void listarProfessores(Professor listaProfessores[], int qtdProfessores);
 void atualizarProfessores(Professor listaProfessores[], int qtdProfessores);

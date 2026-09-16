@@ -8,10 +8,12 @@ typedef struct {
     int codigo;
     char nome[TAM_NOME];
     int ativa;
+    int vagas;
+    int qtdAlunos;
 } Disciplina;
 
 
-
+int menuDisciplina(void);
 
 
 

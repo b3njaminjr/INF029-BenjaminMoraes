@@ -2,22 +2,21 @@
 #include "aluno.h"
 #include "professor.h"
 #include "disciplina.h"
+#include "auxiliares.h"
+#include "relatorios.h"
+
+
+int menuPrincipal();
+int menuDisciplina();
 
 int main(void) {
-    Aluno listaAlunos[TAM_ALUNO];
+    Aluno listaAlunos[TAM_ALUNOS];
     int opcao;
     int qtdAluno = 0;
     int sair = 0;
 
     while (!sair) {
-        printf("Projeto Escola\n");
-        printf("0- Sair\n");
-        printf("1- Aluno\n");
-        printf("2- Professor\n");
-        printf("3- Disciplina\n");
-
-        scanf("%d", &opcao);
-
+        opcao = menuPrincipal();
         switch (opcao) {
             case 0:
                 sair = 1;
@@ -38,7 +37,8 @@ int main(void) {
 
                         case 1:
                             printf("Cadastrar Aluno\n");
-                            cadastrarAluno(listaAlunos, &qtdAluno);
+                            cadastrarAluno(listaAlunos, qtdAluno);
+                            
                             break;
 
                         case 2:
@@ -69,11 +69,11 @@ int main(void) {
                 int sairProfessor = 0;
                 int opcaoProfessor;
 
-                while(!sairProfessor) {
+                while (!sairProfessor) {
                     opcaoProfessor = menuProfessor();
 
                     switch (opcaoProfessor) {
-                        case 0: 
+                        case 0:
                             sairProfessor = 1;
                             break;
 
@@ -85,14 +85,14 @@ int main(void) {
                             printf("Listar Professor\n");
                             break;
 
-                        case 3: 
+                        case 3:
                             printf("Atualizar Professor\n");
                             break;
 
                         case 4:
                             printf("Excluir Professor\n");
                             break;
-                            
+
                         default:
                             printf("Opcao invalida\n");
                             break;
@@ -100,17 +100,17 @@ int main(void) {
                 }
                 break;
             }
-            
+
             case 3: {
                 printf("====== Modulo Disciplina ======\n");
                 int sairDisciplina = 0;
                 int opcaoDisciplina;
 
-                while(!sairDisciplina) {
+                while (!sairDisciplina) {
                     opcaoDisciplina = menuDisciplina();
 
                     switch (opcaoDisciplina) {
-                        case 0: 
+                        case 0:
                             sairDisciplina = 1;
                             break;
 
@@ -137,7 +137,28 @@ int main(void) {
                 }
                 break;
             }
+
+            default:
+                printf("Opcao invalida\n");
+                break;
+        }
     }
 
     return 0;
+}
+
+// funcao do menu geral
+int menuPrincipal() {
+    int opcao;
+    printf("ESCOLA MUNDO EDUCACAO \n"); // nome qualquer
+    printf("=============================\n");
+    printf("0 - Sair\n");
+    printf("1 - Modulo Alunos\n");
+    printf("2 - Modulo Professores\n");
+    printf("3 - Modulo Disciplinas\n");
+    printf("4 - Relatorios\n");
+    printf("Escolha uma opcao: ");
+    scanf("%d", &opcao);
+    limparBuffer();
+    return opcao;
 }
