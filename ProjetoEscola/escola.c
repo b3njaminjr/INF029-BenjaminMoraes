@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include "aluno.h"
+#include "auxiliares.h"
 #include "professor.h"
 #include "disciplina.h"
-#include "auxiliares.h"
 #include "relatorios.h"
 
 
 int menuPrincipal();
-int menuDisciplina();
 
 int main(void) {
     Aluno listaAlunos[TAM_ALUNOS];
@@ -70,7 +69,7 @@ int main(void) {
                 int opcaoProfessor;
 
                 while (!sairProfessor) {
-                    opcaoProfessor = menuProfessor();
+                     opcaoProfessor = menuProfessor();
 
                     switch (opcaoProfessor) {
                         case 0:
@@ -159,6 +158,5 @@ int menuPrincipal() {
     printf("4 - Relatorios\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opcao);
-    limparBuffer();
     return opcao;
 }

@@ -1,15 +1,15 @@
 #include "auxiliares.h"
 #include <stdio.h>
 #include <string.h>
-#include "aluno.h"
+#include <ctype.h>
 
-
-void limparBuffer() {
-    int c;
+ void limparBuffer() {
+    char c;
     while ((c = getchar()) != '\n' && c != EOF) {
         // Limpa o buffer de entrada
     }
-}
+} 
+
 
 void lerTexto(char *texto){
     scanf(" %[^\n]", texto);
@@ -51,14 +51,14 @@ void formatarNome(char nome[]) {
     }
 }
 
-char validarSexo(char sexo) {
+char validarSexo() {
+    char sexo;
     do {
         printf("Digite o novo sexo (M/F): ");
         scanf(" %c", &sexo);
         sexo = toupper(sexo);
         if(sexo != 'M' && sexo != 'F')
             printf("Opcao invalida! Digite 'M' para (masculino) e 'F' para (feminino)");
-        limparBuffer();
     } while(sexo != 'M' && sexo != 'F');
 
     return sexo;
