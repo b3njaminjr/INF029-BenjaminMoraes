@@ -5,13 +5,16 @@
 #include "disciplina.h"
 #include "relatorios.h"
 
-
-int menuPrincipal();
+int menuPrincipal(void);
 
 int main(void) {
     Aluno listaAlunos[TAM_ALUNOS];
-    int opcao;
     int qtdAluno = 0;
+
+    Professor listaProfessores[TAM_PROFESSORES];
+    int qtdProfessor = 0;
+
+    int opcao;
     int sair = 0;
 
     while (!sair) {
@@ -22,41 +25,28 @@ int main(void) {
                 break;
 
             case 1: {
-                printf("\n====== Modulo Aluno ======\n");
                 int sairAluno = 0;
-                int opcaoAluno;
-
                 while (!sairAluno) {
-                    opcaoAluno = menuAluno();
+                    int opcaoAluno = menuAluno();
 
                     switch (opcaoAluno) {
                         case 0:
                             sairAluno = 1;
                             break;
-
                         case 1:
-                            printf("Cadastrar Aluno\n");
-                            cadastrarAluno(listaAlunos, qtdAluno);
-                            
+                            cadastrarAluno(listaAlunos, &qtdAluno);
                             break;
-
                         case 2:
-                            printf("Listar Aluno\n");
                             listarAlunos(listaAlunos, qtdAluno);
                             break;
-
                         case 3:
-                            printf("Atualizar Aluno\n");
                             atualizarAluno(listaAlunos, qtdAluno);
                             break;
-
                         case 4:
-                            printf("Excluir Aluno\n");
                             excluirAluno(listaAlunos, &qtdAluno);
                             break;
-
                         default:
-                            printf("Opcao invalida\n");
+                            printf("Opcao invalida!\n");
                             break;
                     }
                 }
@@ -64,36 +54,28 @@ int main(void) {
             }
 
             case 2: {
-                printf("====== Modulo Professor ======\n");
                 int sairProfessor = 0;
-                int opcaoProfessor;
-
                 while (!sairProfessor) {
-                     opcaoProfessor = menuProfessor();
+                    int opcaoProfessor = menuProfessor();
 
                     switch (opcaoProfessor) {
                         case 0:
                             sairProfessor = 1;
                             break;
-
                         case 1:
-                            printf("Cadastrar Professor\n");
+                            cadastrarProfessor(listaProfessores, &qtdProfessor);
                             break;
-
                         case 2:
-                            printf("Listar Professor\n");
+                            listarProfessores(listaProfessores, qtdProfessor);
                             break;
-
                         case 3:
-                            printf("Atualizar Professor\n");
+                            atualizarProfessor(listaProfessores, qtdProfessor);
                             break;
-
                         case 4:
-                            printf("Excluir Professor\n");
+                            excluirProfessor(listaProfessores, &qtdProfessor);
                             break;
-
                         default:
-                            printf("Opcao invalida\n");
+                            printf("Opcao invalida!\n");
                             break;
                     }
                 }
@@ -101,44 +83,41 @@ int main(void) {
             }
 
             case 3: {
-                printf("====== Modulo Disciplina ======\n");
+                printf("\n====== Modulo Disciplina ======\n");
                 int sairDisciplina = 0;
-                int opcaoDisciplina;
-
                 while (!sairDisciplina) {
-                    opcaoDisciplina = menuDisciplina();
+                    int opcaoDisciplina = menuDisciplina();
 
                     switch (opcaoDisciplina) {
                         case 0:
                             sairDisciplina = 1;
                             break;
-
                         case 1:
                             printf("Cadastrar Disciplina\n");
                             break;
-
                         case 2:
                             printf("Listar Disciplina\n");
                             break;
-
                         case 3:
                             printf("Atualizar Disciplina\n");
                             break;
-
                         case 4:
                             printf("Excluir Disciplina\n");
                             break;
-
                         default:
-                            printf("Opcao invalida\n");
+                            printf("Opcao invalida!\n");
                             break;
                     }
                 }
                 break;
             }
 
+            case 4:
+                printf("\n====== Modulo Relatorios ======\n");
+                break;
+
             default:
-                printf("Opcao invalida\n");
+                printf("Opcao invalida!\n");
                 break;
         }
     }
@@ -146,10 +125,10 @@ int main(void) {
     return 0;
 }
 
-// funcao do menu geral
-int menuPrincipal() {
+int menuPrincipal(void) {
     int opcao;
-    printf("ESCOLA MUNDO EDUCACAO \n"); // nome qualquer
+    printf("\n=============================\n");
+    printf("    ESCOLA MUNDO EDUCACAO    \n");
     printf("=============================\n");
     printf("0 - Sair\n");
     printf("1 - Modulo Alunos\n");
@@ -158,5 +137,6 @@ int menuPrincipal() {
     printf("4 - Relatorios\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opcao);
+    limparBuffer();
     return opcao;
 }

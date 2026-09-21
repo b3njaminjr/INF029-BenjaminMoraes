@@ -11,8 +11,8 @@
 } 
 
 
-void lerTexto(char *texto){
-    scanf(" %[^\n]", texto);
+void lerTexto(char *str, int tamanho){
+    scanf(" %[^\n]", str);
 }
 
 
@@ -64,7 +64,7 @@ char validarSexo() {
     return sexo;
 }
 
-int validarCpf(char *cpf) {
+int validarCpf(const char *cpf) {
     int tam = strlen(cpf);
     if(tam != 11) return 0;
     for(int i = 0; i < tam; i++) {
