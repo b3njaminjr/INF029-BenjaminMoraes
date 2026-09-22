@@ -5,26 +5,32 @@
 #include "professor.h"
 
 #define TAM_DISCIPLINA 20
-#define MAX_ALUNOS_POR_DISCIPLINA 45
+#define MAX_NOME 50
+#define TAM_SEMESTRE 10
+#define MAX_ALUNOS_POR_DISCIPLINA 60
 
 typedef struct {
     int codigo;
-    char nome[50];
-    int semestre;
-    int matriculaProfessor; // -1 se não houver professor
-    int matriculasAlunos[MAX_ALUNOS_POR_DISCIPLINA];
-    int qtdAlunos;
+    char nome[MAX_NOME];
+    char semestre[TAM_SEMESTRE];
+    int matriculaProfessor;
+    int vagas;
+    int qtdAlunosMatriculados;
+    int alunosMatriculados[MAX_ALUNOS_POR_DISCIPLINA];
     int ativa;
 } Disciplina;
 
 int menuDisciplina(void);
-int cadastrarDisciplina(Disciplina lista[], int *qtdDisc, Professor listaProf[], int qtdProf);
-void listarDisciplinas(Disciplina lista[], int qtdDisc, Professor listaProf[], int qtdProf);
-void atualizarDisciplina(Disciplina lista[], int qtdDisc, Professor listaProf[], int qtdProf);
-void excluirDisciplina(Disciplina lista[], int *qtdDisc);
+int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Professor listaProfessores[], int qtdProfessores);
+int buscarDisciplinaPorCodigo(Disciplina listaDisciplinas[], int qtdDisciplina, int codigo);
+int formatarNomeDisciplina(char texto[]);
+void listarDisciplinas(Disciplina listaDisciplinas[], int qtdDisciplina, Professor listaProfessores[], int qtdProfessores);
+void atualizarDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Professor listaProfessores[], int qtdProfessores);
+void excluirDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina);
 
-void matricularAlunoNaDisciplina(Disciplina listaDisc[], int qtdDisc, Aluno listaAlunos[], int qtdAlunos);
-void desmatricularAlunoDaDisciplina(Disciplina listaDisc[], int qtdDisc);
-void listarAlunosDaDisciplina(Disciplina listaDisc[], int qtdDisc, Aluno listaAlunos[], int qtdAlunos);
+int matricularAlunoNaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAluno);
+int desmatricularAlunoDaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAluno);
+void relatorioVagasDisciplinas(Disciplina listaDisciplinas[], int qtdDisciplina);
+void listarAlunosDaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAlunos);
 
 #endif

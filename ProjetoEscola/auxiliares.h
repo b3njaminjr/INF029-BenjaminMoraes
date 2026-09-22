@@ -13,5 +13,6 @@ int validarData(Data d);
 int validarCpf(const char *cpf);
 char validarSexo(void);
 void formatarNome(char *nome);
+void formatarSemestre(); //ideia de novaDisciplina.semestre ser uma string e precisar ser formatada
 
 #endif
