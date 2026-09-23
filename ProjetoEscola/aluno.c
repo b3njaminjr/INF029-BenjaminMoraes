@@ -13,7 +13,7 @@ int menuAluno(void) {
     printf("Escolha uma opcao: ");
 
     if (!lerInt(&opcao)) {
-        return -1; // Retorna opção inválida caso digite letras
+        return -1;
     }
     return opcao;
 }
@@ -36,7 +36,6 @@ int cadastrarAluno(Aluno listaAlunos[], int *qtdAluno) {
     Aluno novoAluno = {0};
     printf("\n====== Cadastro de Aluno ======\n");
 
-    // 1. Matrícula com validação de inteiros e duplicidade
     int matriculaValida = 0;
     do {
         printf("Digite a matricula: ");
@@ -46,46 +45,40 @@ int cadastrarAluno(Aluno listaAlunos[], int *qtdAluno) {
             printf("A matricula deve ser um numero positivo. Tente novamente.\n");
         } else if (buscarAlunoPorMatricula(listaAlunos, *qtdAluno, novoAluno.matricula) != -1) {
             printf("Erro: Matricula ja cadastrada no sistema!\n");
-            return 0; // Cancela cadastro duplicado
+            return 0;
         } else {
             matriculaValida = 1;
         }
     } while (!matriculaValida);
 
-    // 2. Nome
     printf("Digite o nome: ");
     lerTexto(novoAluno.nome, TAM_NOME);
     formatarNome(novoAluno.nome);
 
-    // 3. Sexo
     printf("Digite o sexo (M/F): ");
     novoAluno.sexo = validarSexo();
 
-    // 4. Data de Nascimento
     do {
         printf("Digite a data de nascimento (DD/MM/AAAA): ");
-        scanf("%d/%d/%d", &novoAluno.dataNascimento.dia, 
-                           &novoAluno.dataNascimento.mes, 
-                           &novoAluno.dataNascimento.ano);
-        limparBuffer();        
-        if (!validarData(novoAluno.dataNascimento)) {
+        if (!lerData(&novoAluno.dataNascimento) || !validarData(novoAluno.dataNascimento)) {
             printf("Data invalida! Tente novamente.\n");
+        } else {
+            break;
         }
-    } while (!validarData(novoAluno.dataNascimento));
+    } while (1);
 
-    // 5. CPF
     do {
-        printf("Digite o CPF (somente numeros): ");
+        printf("Digite o CPF (11 numeros): ");
         lerTexto(novoAluno.cpf, TAM_CPF);
         if (!validarCpf(novoAluno.cpf)) {
             printf("CPF invalido! Tente novamente.\n");
         }
     } while (!validarCpf(novoAluno.cpf));
 
-    novoAluno.ativo = 1; 
+    novoAluno.ativo = 1;
     listaAlunos[*qtdAluno] = novoAluno;
     (*qtdAluno)++;
-    
+
     printf("\n>>> Aluno cadastrado com sucesso! <<<\n");
     return 1;
 }
@@ -95,12 +88,12 @@ void listarAlunos(Aluno listaAlunos[], int qtdAluno) {
     printf("\n====== Lista de Alunos ======\n");
     for (int i = 0; i < qtdAluno; i++) {
         if (listaAlunos[i].ativo == 1) {
-            printf("Matricula: %d | Nome: %-20s | Sexo: %c | Data Nasc: %02d/%02d/%d | CPF: %s\n",
-                   listaAlunos[i].matricula, 
-                   listaAlunos[i].nome, 
+            printf("Matricula: %d | Nome: %-20s | Sexo: %c | Data Nasc: %02d/%02d/%04d | CPF: %s\n",
+                   listaAlunos[i].matricula,
+                   listaAlunos[i].nome,
                    listaAlunos[i].sexo,
-                   listaAlunos[i].dataNascimento.dia, 
-                   listaAlunos[i].dataNascimento.mes, 
+                   listaAlunos[i].dataNascimento.dia,
+                   listaAlunos[i].dataNascimento.mes,
                    listaAlunos[i].dataNascimento.ano,
                    listaAlunos[i].cpf);
             cadastrados++;
@@ -116,7 +109,7 @@ void atualizarAluno(Aluno listaAlunos[], int qtdAluno) {
     printf("\n====== Atualizar Aluno ======\n");
     printf("Digite a matricula do aluno a ser atualizado: ");
     int matricula;
-    
+
     if (!lerInt(&matricula)) {
         printf("Matricula invalida.\n");
         return;
@@ -125,7 +118,7 @@ void atualizarAluno(Aluno listaAlunos[], int qtdAluno) {
     int indiceMatricula = buscarAlunoPorMatricula(listaAlunos, qtdAluno, matricula);
 
     if (indiceMatricula == -1) {
-        printf("Aluno nao encontrado.\n");
+        printf("Aluno nao encontrado ou inativo.\n");
         return;
     }
 
@@ -138,17 +131,15 @@ void atualizarAluno(Aluno listaAlunos[], int qtdAluno) {
 
     do {
         printf("Digite a nova data de nascimento (DD/MM/AAAA): ");
-        scanf("%d/%d/%d",  &listaAlunos[indiceMatricula].dataNascimento.dia, 
-                           &listaAlunos[indiceMatricula].dataNascimento.mes, 
-                           &listaAlunos[indiceMatricula].dataNascimento.ano);
-        limparBuffer();
-        if (!validarData(listaAlunos[indiceMatricula].dataNascimento)) {
+        if (!lerData(&listaAlunos[indiceMatricula].dataNascimento) || !validarData(listaAlunos[indiceMatricula].dataNascimento)) {
             printf("Data invalida! Tente novamente.\n");
+        } else {
+            break;
         }
-    } while (!validarData(listaAlunos[indiceMatricula].dataNascimento));
+    } while (1);
 
     do {
-        printf("Digite o novo CPF (somente numeros): ");
+        printf("Digite o novo CPF (11 numeros): ");
         lerTexto(listaAlunos[indiceMatricula].cpf, TAM_CPF);
         if (!validarCpf(listaAlunos[indiceMatricula].cpf)) {
             printf("CPF invalido! Tente novamente.\n");
@@ -162,7 +153,7 @@ void excluirAluno(Aluno listaAlunos[], int *qtdAluno) {
     printf("\n====== Excluir Aluno ======\n");
     printf("Digite a matricula do aluno a ser excluido: ");
     int matricula;
-    
+
     if (!lerInt(&matricula)) {
         printf("Matricula invalida.\n");
         return;
@@ -171,15 +162,11 @@ void excluirAluno(Aluno listaAlunos[], int *qtdAluno) {
     int indiceMatricula = buscarAlunoPorMatricula(listaAlunos, *qtdAluno, matricula);
 
     if (indiceMatricula == -1) {
-        printf("Aluno nao encontrado.\n");
+        printf("Aluno nao encontrado ou ja inativo.\n");
         return;
     }
 
-    // Remoção Física do Vetor (Hard Delete)
-    for (int i = indiceMatricula; i < *qtdAluno - 1; i++) {
-        listaAlunos[i] = listaAlunos[i + 1];
-    }
-    (*qtdAluno)--;
+    listaAlunos[indiceMatricula].ativo = 0;
 
     printf("\n>>> Aluno excluido com sucesso! <<<\n");
 }

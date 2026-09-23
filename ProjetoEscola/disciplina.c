@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "disciplina.h"
+#include "auxiliares.h"
 
 int menuDisciplina(void) {
     int opcao;
@@ -15,9 +16,9 @@ int menuDisciplina(void) {
     printf("7 - Relatorio de Alunos por Disciplina\n");
     printf("8 - Relatorio de Ocupacao de Vagas\n");
     printf("Escolha uma opcao: ");
-    
+
     if (!lerInt(&opcao)) {
-        return -1; // Retorna opção inválida caso digite texto
+        return -1;
     }
     return opcao;
 }
@@ -33,7 +34,7 @@ int formatarNomeDisciplina(char texto[]) {
             return -1;
         }
     }
-    return 0; 
+    return 0;
 }
 
 int buscarDisciplinaPorCodigo(Disciplina listaDisciplinas[], int qtdDisciplina, int codigo) {
@@ -46,7 +47,7 @@ int buscarDisciplinaPorCodigo(Disciplina listaDisciplinas[], int qtdDisciplina, 
 }
 
 int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Professor listaProfessores[], int qtdProfessor) {
-    if (*qtdDisciplina >= TAM_DISCIPLINA) {
+    if (*qtdDisciplina >= QTD_MAX_DISCIPLINA) {
         printf("Lista de disciplinas esta cheia!\n");
         return 0;
     }
@@ -63,10 +64,9 @@ int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Profe
         } else if (novaDisciplina.codigo <= 0) {
             printf("Valor invalido! Somente valores positivos maiores que zero. Tente novamente.\n");
         } else if (buscarDisciplinaPorCodigo(listaDisciplinas, *qtdDisciplina, novaDisciplina.codigo) != -1) {
-            // CORREÇÃO: Validação de Código Duplicado
             printf("Erro: Ja existe uma disciplina cadastrada com esse codigo!\n");
         } else {
-            disciplinaValida = 1; 
+            disciplinaValida = 1;
         }
     } while (!disciplinaValida);
 
@@ -74,9 +74,9 @@ int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Profe
     do {
         printf("Informe o nome da disciplina: ");
         lerTexto(novaDisciplina.nome, MAX_NOME);
-        
+
         if (formatarNomeDisciplina(novaDisciplina.nome) == 0) {
-            nomeValido = 1; 
+            nomeValido = 1;
         }
     } while (!nomeValido);
 
@@ -84,8 +84,8 @@ int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Profe
     do {
         printf("Informe o semestre (ex: 2026.2): ");
         lerTexto(novaDisciplina.semestre, TAM_SEMESTRE);
-        
-        if (validarSemestre(novaDisciplina.semestre) == 1) { 
+
+        if (validarSemestre(novaDisciplina.semestre) == 1) {
             semestreValido = 1;
         } else {
             printf("Semestre invalido! Tente novamente.\n");
@@ -99,15 +99,16 @@ int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Profe
 
         if (!leuComSucesso) {
             printf("Caracteres nao sao permitidos. Tente novamente.\n");
-        } else if (novaDisciplina.matriculaProfessor < 0) {
+        } else if (novaDisciplina.matriculaProfessor <= 0) {
             printf("Valor invalido! Tente novamente.\n");
         } else {
             int indiceProfessor = buscarProfessorPorMatricula(listaProfessores, qtdProfessor, novaDisciplina.matriculaProfessor);
 
             if (indiceProfessor != -1) {
-                professorValido = 1; 
+                professorValido = 1;
             } else {
-                printf("Professor nao encontrado no sistema! Tente novamente.\n");
+                    printf("Professor nao encontrado ou inativo no sistema! Tente novamente.\n");
+                    return 0;
             }
         }
     } while (!professorValido);
@@ -128,7 +129,7 @@ int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Profe
         }
     } while (!vagasValidas);
 
-    novaDisciplina.qtdAlunosMatriculados = 0; 
+    novaDisciplina.qtdAlunosMatriculados = 0;
     novaDisciplina.ativa = 1;
 
     listaDisciplinas[*qtdDisciplina] = novaDisciplina;
@@ -145,17 +146,17 @@ void listarDisciplinas(Disciplina listaDisciplinas[], int qtdDisciplina, Profess
         if (listaDisciplinas[i].ativa == 1) {
             char nomeProfessor[50] = "Nao encontrado";
             int idxProf = buscarProfessorPorMatricula(listaProfessores, qtdProfessores, listaDisciplinas[i].matriculaProfessor);
-            
+
             if (idxProf != -1) {
                 strcpy(nomeProfessor, listaProfessores[idxProf].nome);
             }
 
             printf("Codigo: %d | Nome: %-20s | Semestre: %s | Professor: %s | Vagas: %d | Ocupadas: %d\n",
-                   listaDisciplinas[i].codigo, 
-                   listaDisciplinas[i].nome, 
+                   listaDisciplinas[i].codigo,
+                   listaDisciplinas[i].nome,
                    listaDisciplinas[i].semestre,
                    nomeProfessor,
-                   listaDisciplinas[i].vagas, 
+                   listaDisciplinas[i].vagas,
                    listaDisciplinas[i].qtdAlunosMatriculados);
             cadastradas++;
         }
@@ -178,7 +179,7 @@ void atualizarDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Profe
     int indiceCodigo = buscarDisciplinaPorCodigo(listaDisciplinas, qtdDisciplina, codigo);
 
     if (indiceCodigo == -1) {
-        printf("Disciplina nao encontrada.\n");
+        printf("Disciplina nao encontrada ou inativa.\n");
         return;
     }
 
@@ -242,7 +243,7 @@ void atualizarDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Profe
 void excluirDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina) {
     printf("\n====== Excluir Disciplina ======\n");
     printf("Digite o codigo da disciplina a ser excluida: ");
-    
+
     int codigo;
     if (!lerInt(&codigo)) {
         printf("Codigo invalido.\n");
@@ -251,7 +252,7 @@ void excluirDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina) {
 
     int indiceCodigo = buscarDisciplinaPorCodigo(listaDisciplinas, *qtdDisciplina, codigo);
     if (indiceCodigo == -1) {
-        printf("Disciplina nao encontrada.\n");
+        printf("Disciplina nao encontrada ou ja inativa.\n");
         return;
     }
 
@@ -260,13 +261,10 @@ void excluirDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina) {
         printf("Cancele as matriculas dos alunos antes de prosseguir.\n");
         return;
     }
-    
-    for (int i = indiceCodigo; i < *qtdDisciplina - 1; i++) {
-        listaDisciplinas[i] = listaDisciplinas[i + 1];
-    }
-    (*qtdDisciplina)--;
 
-    printf("Disciplina excluida com sucesso!\n");
+    listaDisciplinas[indiceCodigo].ativa = 0;
+
+    printf("Disciplina excluida com sucesso (desativada)!\n");
 }
 
 int matricularAlunoNaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAluno) {
@@ -275,7 +273,7 @@ int matricularAlunoNaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina
         return 0;
     }
 
-    int codigoDisciplina; // CORRIGIDO
+    int codigoDisciplina;
     printf("\n====== Matricula de Aluno em Disciplina ======\n");
     printf("Informe o codigo da disciplina: ");
     if (!lerInt(&codigoDisciplina)) {
@@ -283,7 +281,6 @@ int matricularAlunoNaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina
         return 0;
     }
 
-    // CORRIGIDO: usa codigoDisciplina
     int idxDisciplina = buscarDisciplinaPorCodigo(listaDisciplinas, qtdDisciplina, codigoDisciplina);
     if (idxDisciplina == -1) {
         printf("Disciplina nao encontrada!\n");
@@ -292,8 +289,8 @@ int matricularAlunoNaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina
 
     if (listaDisciplinas[idxDisciplina].qtdAlunosMatriculados >= listaDisciplinas[idxDisciplina].vagas) {
         printf("\n[ERRO] Nao ha vagas disponiveis para a disciplina '%s'!\n", listaDisciplinas[idxDisciplina].nome);
-        printf("Vagas Ocupadas: %d / %d\n", 
-               listaDisciplinas[idxDisciplina].qtdAlunosMatriculados, 
+        printf("Vagas Ocupadas: %d / %d\n",
+               listaDisciplinas[idxDisciplina].qtdAlunosMatriculados,
                listaDisciplinas[idxDisciplina].vagas);
         return 0;
     }
@@ -322,9 +319,9 @@ int matricularAlunoNaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina
     listaDisciplinas[idxDisciplina].alunosMatriculados[pos] = matriculaAluno;
     listaDisciplinas[idxDisciplina].qtdAlunosMatriculados++;
 
-    printf("\nAluno '%s' matriculado com sucesso na disciplina '%s'!\n", 
+    printf("\nAluno '%s' matriculado com sucesso na disciplina '%s'!\n",
            listaAlunos[idxAluno].nome, listaDisciplinas[idxDisciplina].nome);
-    printf("Vagas restantes: %d\n", 
+    printf("Vagas restantes: %d\n",
            listaDisciplinas[idxDisciplina].vagas - listaDisciplinas[idxDisciplina].qtdAlunosMatriculados);
 
     return 1;
@@ -336,7 +333,7 @@ int desmatricularAlunoDaDisciplina(Disciplina listaDisciplinas[], int qtdDiscipl
         return 0;
     }
 
-    int codigoDisciplina; // CORRIGIDO
+    int codigoDisciplina;
     printf("\n====== Cancelamento de Matricula ======\n");
     printf("Informe o codigo da disciplina: ");
     if (!lerInt(&codigoDisciplina)) {
@@ -344,7 +341,6 @@ int desmatricularAlunoDaDisciplina(Disciplina listaDisciplinas[], int qtdDiscipl
         return 0;
     }
 
-    // CORRIGIDO: usa codigoDisciplina
     int idxDisciplina = buscarDisciplinaPorCodigo(listaDisciplinas, qtdDisciplina, codigoDisciplina);
     if (idxDisciplina == -1) {
         printf("Disciplina nao encontrada!\n");
@@ -383,14 +379,13 @@ int desmatricularAlunoDaDisciplina(Disciplina listaDisciplinas[], int qtdDiscipl
     listaDisciplinas[idxDisciplina].qtdAlunosMatriculados--;
 
     printf("\nAluno removido com sucesso da disciplina '%s'!\n", listaDisciplinas[idxDisciplina].nome);
-    printf("Vagas disponiveis atualizadas: %d / %d\n", 
+    printf("Vagas disponiveis atualizadas: %d / %d\n",
            listaDisciplinas[idxDisciplina].vagas - listaDisciplinas[idxDisciplina].qtdAlunosMatriculados,
            listaDisciplinas[idxDisciplina].vagas);
 
     return 1;
 }
 
-// NOVO: Relatório de alunos por disciplina
 void relatorioAlunosPorDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAluno) {
     if (qtdDisciplina == 0) {
         printf("Nenhuma disciplina cadastrada.\n");
@@ -427,16 +422,13 @@ void relatorioAlunosPorDisciplina(Disciplina listaDisciplinas[], int qtdDiscipli
         if (idxAluno != -1) {
             printf("  [%d] Matricula: %d | Nome: %s\n", i + 1, listaAlunos[idxAluno].matricula, listaAlunos[idxAluno].nome);
         } else {
-            printf("  [%d] Matricula: %d | Nome: [Aluno Removido do Sistema]\n", i + 1, mat);
+            printf("  [%d] Matricula: %d | Nome: [Aluno Inativo ou Removido]\n", i + 1, mat);
         }
     }
 }
 
-// NOVO: Relatório de Ocupação
 void relatorioVagasDisciplinas(Disciplina listaDisciplinas[], int qtdDisciplina) {
-    printf("\n=====================================================================\n");
-    printf("                    RELATORIO DE OCUPACAO DE VAGAS                    \n");
-    printf("=====================================================================\n");
+    printf("\n====== RELATORIO DE OCUPACAO DE VAGAS ======\n");
 
     int totalAtivas = 0;
     for (int i = 0; i < qtdDisciplina; i++) {
@@ -447,9 +439,9 @@ void relatorioVagasDisciplinas(Disciplina listaDisciplinas[], int qtdDisciplina)
             int disponiveis = totalVagas - ocupadas;
             float percentual = ((float)ocupadas / totalVagas) * 100.0f;
 
-            printf("Codigo: %d | Disciplina: %-20s | Semestre: %s\n", 
+            printf("Codigo: %d | Disciplina: %-20s | Semestre: %s\n",
                    listaDisciplinas[i].codigo, listaDisciplinas[i].nome, listaDisciplinas[i].semestre);
-            printf("  Vagas Totais : %d | Ocupadas: %d | Disponiveis: %d | Ocupacao: %.1f%%\n", 
+            printf("  Vagas Totais : %d | Ocupadas: %d | Disponiveis: %d | Ocupacao: %.1f%%\n",
                    totalVagas, ocupadas, disponiveis, percentual);
             printf("---------------------------------------------------------------------\n");
         }

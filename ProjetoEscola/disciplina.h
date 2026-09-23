@@ -4,12 +4,12 @@
 #include "aluno.h"
 #include "professor.h"
 
-#define TAM_DISCIPLINA 20
+#define QTD_MAX_DISCIPLINA 20
 #define MAX_NOME 50
 #define TAM_SEMESTRE 10
 #define MAX_ALUNOS_POR_DISCIPLINA 60
 
-typedef struct {
+typedef struct Disciplina {
     int codigo;
     char nome[MAX_NOME];
     char semestre[TAM_SEMESTRE];
@@ -30,7 +30,7 @@ void excluirDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina);
 
 int matricularAlunoNaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAluno);
 int desmatricularAlunoDaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAluno);
+void relatorioAlunosPorDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAluno);
 void relatorioVagasDisciplinas(Disciplina listaDisciplinas[], int qtdDisciplina);
-void listarAlunosDaDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Aluno listaAlunos[], int qtdAlunos);
 
 #endif

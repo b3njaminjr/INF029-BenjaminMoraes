@@ -3,52 +3,57 @@
 #include <string.h>
 #include <ctype.h>
 
-// 1. Limpeza do Buffer de Entrada
 void limparBuffer(void) {
-    int c; // Usar int para garantir a comparação correta com EOF
+    int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-// 2. Leitura Segura de Texto (evita Buffer Overflow e remove o '\n')
 void lerTexto(char *str, int tamanho) {
     if (fgets(str, tamanho, stdin) != NULL) {
         size_t len = strlen(str);
         if (len > 0 && str[len - 1] == '\n') {
-            str[len - 1] = '\0'; // Remove o caractere de nova linha
+            str[len - 1] = '\0';
         } else {
-            limparBuffer(); // Limpa o excesso caso o usuário ultrapasse o limite
+            limparBuffer();
         }
     }
 }
 
-// 3. Leitura Segura de Inteiros (Retorna 1 para SUCESSO, 0 para ERRO)
-int lerInt(int *n) {
-    if (scanf("%d", n) != 1) {
-        limparBuffer(); // Corrigido de limpar_buffer para limparBuffer
-        return 0; // Falha
+int lerInt(int *num) {
+    char buffer[100];
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        if (sscanf(buffer, "%d", num) == 1) {
+            return 1;
+        }
     }
-    limparBuffer(); // Garante a remoção do \n residual
-    return 1; // Sucesso
+    return 0;
 }
 
-// 4. Validação de Data (Bissexto + limites)
-int validarData(Data d) {
-    if (d.ano < 1900 || d.ano > 2026) return 0;
-    if (d.mes < 1 || d.mes > 12) return 0;
+int lerData(Data *data) {
+    char buffer[100];
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        if (sscanf(buffer, "%d/%d/%d", &data->dia, &data->mes, &data->ano) == 3) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int validarData(Data data) {
+    if (data.ano < 1900 || data.ano > 2100) return 0;
+    if (data.mes < 1 || data.mes > 12) return 0;
 
     int diasNoMes[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    // Ajuste para ano bissexto
-    if ((d.ano % 4 == 0 && d.ano % 100 != 0) || (d.ano % 400 == 0)) {
+    if ((data.ano % 4 == 0 && data.ano % 100 != 0) || (data.ano % 400 == 0)) {
         diasNoMes[1] = 29;
     }
 
-    if (d.dia < 1 || d.dia > diasNoMes[d.mes - 1]) return 0;
+    if (data.dia < 1 || data.dia > diasNoMes[data.mes - 1]) return 0;
 
-    return 1; // Data válida
+    return 1;
 }
 
-// 5. Formatação do Nome (Primeira letra Maiúscula, demais Minúsculas)
 void formatarNome(char nome[]) {
     int deixarMaiusculo = 1;
     for (int i = 0; nome[i] != '\0'; i++) {
@@ -63,29 +68,37 @@ void formatarNome(char nome[]) {
     }
 }
 
-// 6. Validação do Sexo (M / F)
 char validarSexo(void) {
     char sexo;
+    char buffer[100];
     do {
-        scanf(" %c", &sexo);
-        limparBuffer();
-        sexo = (char)toupper((unsigned char)sexo);
-        if (sexo != 'M' && sexo != 'F') {
-            printf("Opcao invalida! Digite 'M' para Masculino ou 'F' para Feminino: ");
+        if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+            if (sscanf(buffer, " %c", &sexo) == 1) {
+                sexo = (char)toupper((unsigned char)sexo);
+                if (sexo == 'M' || sexo == 'F') {
+                    return sexo;
+                }
+            }
         }
-    } while (sexo != 'M' && sexo != 'F');
-
-    return sexo;
+        printf("Opcao invalida! Digite 'M' para Masculino ou 'F' para Feminino: ");
+    } while (1);
 }
 
-// 7. Validação do CPF (Tamanho de 11 dígitos numéricos)
 int validarCpf(const char *cpf) {
     int tam = strlen(cpf);
     if (tam != 11) return 0;
-
     for (int i = 0; i < tam; i++) {
-        // Corrigido operador && para ||
-        if (cpf[i] < '0' || cpf[i] > '9') return 0; 
+        if (cpf[i] < '0' || cpf[i] > '9') return 0;
     }
     return 1;
+}
+
+int validarSemestre(const char *semestre) {
+    int ano, sem;
+    if (sscanf(semestre, "%d.%d", &ano, &sem) == 2) {
+        if (ano >= 1900 && ano <= 2100 && (sem == 1 || sem == 2)) {
+            return 1;
+        }
+    }
+    return 0;
 }

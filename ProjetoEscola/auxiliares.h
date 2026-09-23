@@ -9,10 +9,12 @@ typedef struct {
 
 void limparBuffer(void);
 void lerTexto(char *str, int tamanho);
+int lerInt(int *num);
+int lerData(Data *data);
 int validarData(Data d);
-int validarCpf(const char *cpf);
+void formatarNome(char nome[]);
 char validarSexo(void);
-void formatarNome(char *nome);
-void formatarSemestre(); //ideia de novaDisciplina.semestre ser uma string e precisar ser formatada
+int validarCpf(const char *cpf);
+int validarSemestre(const char *semestre);
 
 #endif

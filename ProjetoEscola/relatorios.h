@@ -6,9 +6,19 @@
 #include "disciplina.h"
 
 int menuRelatorios(void);
+
+// Relatórios de Alunos
 void listarAlunosPorSexo(Aluno listaAlunos[], int qtdAluno);
 void listarAlunosPorNome(Aluno listaAlunos[], int qtdAluno);
-void listarAniversariantesDoMes(Aluno listaAlunos[], int qtdAluno);
-void buscarAlunoPorTexto(Aluno listaAlunos[], int qtdAluno);
+void listarAlunosPorDataNascimento(Aluno listaAlunos[], int qtdAluno);
+
+// Relatórios de Professores
+void listarProfessoresPorSexo(Professor listaProfessores[], int qtdProfessor);
+void listarProfessoresPorNome(Professor listaProfessores[], int qtdProfessor);
+void listarProfessoresPorDataNascimento(Professor listaProfessores[], int qtdProfessor);
+
+// Relatórios Gerais
+void listarAniversariantesDoMes(Aluno listaAlunos[], int qtdAluno, Professor listaProfessores[], int qtdProfessor);
+void buscarPessoaPorTexto(Aluno listaAlunos[], int qtdAluno, Professor listaProfessores[], int qtdProfessor);
 
 #endif

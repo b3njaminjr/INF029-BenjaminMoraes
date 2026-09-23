@@ -1,8 +1,8 @@
 #include <stdio.h>
+#include "auxiliares.h"
 #include "professor.h"
-#include "auxiliares.h" // Garante acesso às funções auxiliares
+#include "disciplina.h"
 
-// 1. Menu com leitura segura de inteiro
 int menuProfessor(void) {
     int opcao;
     printf("\n--- MENU PROFESSOR ---\n");
@@ -14,23 +14,31 @@ int menuProfessor(void) {
     printf("Escolha uma opcao: ");
 
     if (!lerInt(&opcao)) {
-        return -1; // Retorna opcao invalida caso o usuario digite texto
+        return -1;
     }
     return opcao;
 }
 
-// 2. Cadastro de Professor
+int buscarProfessorPorMatricula(Professor listaProfessores[], int qtdProfessor, int matricula) {
+    for (int i = 0; i < qtdProfessor; i++) {
+        if (listaProfessores[i].matricula == matricula && listaProfessores[i].ativo == 1) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 int cadastrarProfessor(Professor listaProfessores[], int *qtdProfessor) {
-    if (*qtdProfessor == TAM_PROFESSORES) {
-        printf("Lista de professores cheia\n");
+    if (*qtdProfessor >= TAM_PROFESSORES) {
+        printf("Lista de professores cheia!\n");
         return 0;
     }
 
-    Professor novoProfessor;
+    Professor novoProfessor = {0};
 
-    printf("\n====== Cadastro de Professor =====\n");
+    printf("\n====== Cadastro de Professor ======\n");
     printf("Digite a matricula: ");
-    if (!lerInt(&novoProfessor.matricula)) {
+    if (!lerInt(&novoProfessor.matricula) || novoProfessor.matricula <= 0) {
         printf("Matricula invalida!\n");
         return 0;
     }
@@ -44,29 +52,18 @@ int cadastrarProfessor(Professor listaProfessores[], int *qtdProfessor) {
     lerTexto(novoProfessor.nome, TAM_NOME);
     formatarNome(novoProfessor.nome);
 
-    // validarSexo() cuida do loop e leitura do caractere
+    printf("Digite o sexo (M/F): ");
     novoProfessor.sexo = validarSexo();
 
-    // Validação de Data sem repetição de função
-    int dataValida = 0;
     do {
         printf("Digite a data de nascimento (DD/MM/AAAA): ");
-        if (scanf("%d/%d/%d", &novoProfessor.dataNascimento.dia, 
-                             &novoProfessor.dataNascimento.mes, 
-                             &novoProfessor.dataNascimento.ano) == 3) {
-            limparBuffer();
-            dataValida = validarData(novoProfessor.dataNascimento);
-        } else {
-            limparBuffer(); // Limpa se o usuario digitar caracteres invalidos
-            dataValida = 0;
-        }
-
-        if (!dataValida) {
+        if (!lerData(&novoProfessor.dataNascimento) || !validarData(novoProfessor.dataNascimento)) {
             printf("Data invalida! Tente novamente.\n");
+        } else {
+            break;
         }
-    } while (!dataValida);
+    } while (1);
 
-    // Validação de CPF
     do {
         printf("Digite o CPF (11 numeros): ");
         lerTexto(novoProfessor.cpf, TAM_CPF);
@@ -75,7 +72,7 @@ int cadastrarProfessor(Professor listaProfessores[], int *qtdProfessor) {
         }
     } while (!validarCpf(novoProfessor.cpf));
 
-    novoProfessor.ativo = 1; 
+    novoProfessor.ativo = 1;
     listaProfessores[*qtdProfessor] = novoProfessor;
     (*qtdProfessor)++;
 
@@ -83,7 +80,6 @@ int cadastrarProfessor(Professor listaProfessores[], int *qtdProfessor) {
     return 1;
 }
 
-// 3. Listagem de Professores
 void listarProfessores(Professor listaProfessores[], int qtdProfessor) {
     int cadastrados = 0;
     printf("\n--- LISTA DE PROFESSORES ---\n");
@@ -91,11 +87,11 @@ void listarProfessores(Professor listaProfessores[], int qtdProfessor) {
     for (int i = 0; i < qtdProfessor; i++) {
         if (listaProfessores[i].ativo == 1) {
             printf("Matricula: %d | Nome: %-20s | Sexo: %c | Data Nasc: %02d/%02d/%04d | CPF: %s\n",
-                   listaProfessores[i].matricula, 
-                   listaProfessores[i].nome, 
+                   listaProfessores[i].matricula,
+                   listaProfessores[i].nome,
                    listaProfessores[i].sexo,
-                   listaProfessores[i].dataNascimento.dia, 
-                   listaProfessores[i].dataNascimento.mes, 
+                   listaProfessores[i].dataNascimento.dia,
+                   listaProfessores[i].dataNascimento.mes,
                    listaProfessores[i].dataNascimento.ano,
                    listaProfessores[i].cpf);
             cadastrados++;
@@ -103,21 +99,10 @@ void listarProfessores(Professor listaProfessores[], int qtdProfessor) {
     }
 
     if (cadastrados == 0) {
-        printf("Lista de professores esta vazia.\n");
+        printf("Lista de professores esta vazia ou nenhum ativo.\n");
     }
 }
 
-// 4. Busca por Matrícula
-int buscarProfessorPorMatricula(Professor listaProfessores[], int qtdProfessor, int matricula) {
-    for (int i = 0; i < qtdProfessor; i++) {
-        if (listaProfessores[i].matricula == matricula && listaProfessores[i].ativo == 1) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-// 5. Atualização de Professor
 void atualizarProfessor(Professor listaProfessores[], int qtdProfessor) {
     printf("Digite a matricula do professor a atualizar: ");
     int matricula;
@@ -129,7 +114,7 @@ void atualizarProfessor(Professor listaProfessores[], int qtdProfessor) {
     int indice = buscarProfessorPorMatricula(listaProfessores, qtdProfessor, matricula);
 
     if (indice == -1) {
-        printf("Professor nao encontrado.\n");
+        printf("Professor nao encontrado ou inativo.\n");
         return;
     }
 
@@ -137,25 +122,17 @@ void atualizarProfessor(Professor listaProfessores[], int qtdProfessor) {
     lerTexto(listaProfessores[indice].nome, TAM_NOME);
     formatarNome(listaProfessores[indice].nome);
 
+    printf("Digite o novo sexo (M/F): ");
     listaProfessores[indice].sexo = validarSexo();
 
-    int dataValida = 0;
     do {
         printf("Digite a nova data de nascimento (DD/MM/AAAA): ");
-        if (scanf("%d/%d/%d", &listaProfessores[indice].dataNascimento.dia, 
-                             &listaProfessores[indice].dataNascimento.mes, 
-                             &listaProfessores[indice].dataNascimento.ano) == 3) {
-            limparBuffer();
-            dataValida = validarData(listaProfessores[indice].dataNascimento);
-        } else {
-            limparBuffer();
-            dataValida = 0;
-        }
-
-        if (!dataValida) {
+        if (!lerData(&listaProfessores[indice].dataNascimento) || !validarData(listaProfessores[indice].dataNascimento)) {
             printf("Data invalida! Tente novamente.\n");
+        } else {
+            break;
         }
-    } while (!dataValida);
+    } while (1);
 
     do {
         printf("Digite o novo CPF (11 numeros): ");
@@ -168,8 +145,9 @@ void atualizarProfessor(Professor listaProfessores[], int qtdProfessor) {
     printf("Professor atualizado com sucesso!\n");
 }
 
-// 6. Exclusão de Professor (Remoção física deslocando elementos)
-void excluirProfessor(Professor listaProfessores[], int *qtdProfessor) {
+void excluirProfessor(Professor listaProfessores[], int *qtdProfessor, void *listaDisciplinasPtr, int qtdDisciplina) {
+    Disciplina *listaDisciplinas = (Disciplina*) listaDisciplinasPtr;
+
     printf("Digite a matricula do professor a excluir: ");
     int matricula;
     if (!lerInt(&matricula)) {
@@ -180,15 +158,19 @@ void excluirProfessor(Professor listaProfessores[], int *qtdProfessor) {
     int indice = buscarProfessorPorMatricula(listaProfessores, *qtdProfessor, matricula);
 
     if (indice == -1) {
-        printf("Professor nao encontrado.\n");
+        printf("Professor nao encontrado ou ja inativo.\n");
         return;
     }
 
-    // Desloca os elementos para cobrir a posição removida
-    for (int i = indice; i < *qtdProfessor - 1; i++) {
-        listaProfessores[i] = listaProfessores[i + 1];
+    for (int i = 0; i < qtdDisciplina; i++) {
+        if (listaDisciplinas[i].ativa && listaDisciplinas[i].matriculaProfessor == matricula) {
+            printf("Erro: O professor nao pode ser excluido pois e o responsavel pela disciplina '%s'!\n",
+                   listaDisciplinas[i].nome);
+            printf("Altere o professor da disciplina antes de realizar a exclusao.\n");
+            return;
+        }
     }
 
-    (*qtdProfessor)--;
-    printf("Professor excluido com sucesso!\n");
+    listaProfessores[indice].ativo = 0;
+    printf("Professor excluido com sucesso (desativado)!\n");
 }

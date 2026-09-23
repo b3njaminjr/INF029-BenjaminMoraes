@@ -21,6 +21,6 @@ int cadastrarProfessor(Professor listaProfessores[], int *qtdProfessor);
 void listarProfessores(Professor listaProfessores[], int qtdProfessor);
 int buscarProfessorPorMatricula(Professor listaProfessores[], int qtdProfessor, int matricula);
 void atualizarProfessor(Professor listaProfessores[], int qtdProfessor);
-void excluirProfessor(Professor listaProfessores[], int *qtdProfessor);
+void excluirProfessor(Professor listaProfessores[], int *qtdProfessor, void *listaDisciplinas, int qtdDisciplina);
 
 #endif
