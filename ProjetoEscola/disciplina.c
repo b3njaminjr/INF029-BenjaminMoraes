@@ -217,6 +217,7 @@ void atualizarDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Profe
             }
         } else {
             printf("Matricula invalida. Digite apenas numeros.\n");
+            return 0;
         }
     } while (!professorValido);
 
