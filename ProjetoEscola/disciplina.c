@@ -52,6 +52,19 @@ int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Profe
         return 0;
     }
 
+    // CORREÇÃO DO BUG DO LOOP INFINITO:
+    // Verifica se existe ao menos 1 professor ativo cadastrado no sistema antes de prosseguir
+    int profsAtivos = 0;
+    for (int i = 0; i < qtdProfessor; i++) {
+        if (listaProfessores[i].ativo) profsAtivos++;
+    }
+
+    if (profsAtivos == 0) {
+        printf("\n[ERRO] Nao e possivel cadastrar disciplinas sem antes cadastrar ao menos um professor ativo!\n");
+        printf("Cadastre um professor no Modulo de Professores antes de continuar.\n");
+        return 0;
+    }
+
     Disciplina novaDisciplina = {0};
     int disciplinaValida = 0;
 
@@ -107,8 +120,7 @@ int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Profe
             if (indiceProfessor != -1) {
                 professorValido = 1;
             } else {
-                    printf("Professor nao encontrado ou inativo no sistema! Tente novamente.\n");
-                    return 0;
+                printf("Professor nao encontrado ou inativo no sistema! Tente novamente.\n");
             }
         }
     } while (!professorValido);
@@ -217,7 +229,6 @@ void atualizarDisciplina(Disciplina listaDisciplinas[], int qtdDisciplina, Profe
             }
         } else {
             printf("Matricula invalida. Digite apenas numeros.\n");
-            return 0;
         }
     } while (!professorValido);
 

@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "auxiliares.h"
 #include "professor.h"
 #include "disciplina.h"
+#include "auxiliares.h"
 
 int menuProfessor(void) {
     int opcao;

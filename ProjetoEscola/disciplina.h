@@ -7,7 +7,7 @@
 #define QTD_MAX_DISCIPLINA 20
 #define MAX_NOME 50
 #define TAM_SEMESTRE 10
-#define MAX_ALUNOS_POR_DISCIPLINA 60
+#define MAX_ALUNOS_POR_DISCIPLINA 40
 
 typedef struct Disciplina {
     int codigo;
@@ -21,7 +21,7 @@ typedef struct Disciplina {
 } Disciplina;
 
 int menuDisciplina(void);
-int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Professor listaProfessores[], int qtdProfessores);
+int cadastrarDisciplina(Disciplina listaDisciplinas[], int *qtdDisciplina, Professor listaProfessores[], int qtdProfessor);
 int buscarDisciplinaPorCodigo(Disciplina listaDisciplinas[], int qtdDisciplina, int codigo);
 int formatarNomeDisciplina(char texto[]);
 void listarDisciplinas(Disciplina listaDisciplinas[], int qtdDisciplina, Professor listaProfessores[], int qtdProfessores);

@@ -20,5 +20,7 @@ void listarProfessoresPorDataNascimento(Professor listaProfessores[], int qtdPro
 // Relatórios Gerais
 void listarAniversariantesDoMes(Aluno listaAlunos[], int qtdAluno, Professor listaProfessores[], int qtdProfessor);
 void buscarPessoaPorTexto(Aluno listaAlunos[], int qtdAluno, Professor listaProfessores[], int qtdProfessor);
+void listarAlunosMenosDeTresDisciplinas(Aluno listaAlunos[], int qtdAluno, Disciplina listaDisciplinas[], int qtdDisciplina);
+void listarDisciplinasExtrapolamQuarentaVagas(Disciplina listaDisciplinas[], int qtdDisciplina, Professor listaProfessores[], int qtdProfessor);
 
 #endif

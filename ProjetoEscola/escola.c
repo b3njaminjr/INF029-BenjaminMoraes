@@ -160,6 +160,12 @@ int main(void) {
                         case 8:
                             buscarPessoaPorTexto(listaAlunos, qtdAluno, listaProfessores, qtdProfessor);
                             break;
+                        case 9:
+                            listarAlunosMenosDeTresDisciplinas(listaAlunos, qtdAluno, listaDisciplinas, qtdDisciplina);
+                            break;
+                        case 10:
+                            listarDisciplinasExtrapolamQuarentaVagas(listaDisciplinas, qtdDisciplina, listaProfessores, qtdProfessor);
+                            break;
                         default:
                             printf("Opcao invalida!\n");
                             break;

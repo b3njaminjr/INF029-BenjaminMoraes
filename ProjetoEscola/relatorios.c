@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include "auxiliares.h"
 #include "relatorios.h"
+#include "auxiliares.h"
 
 int menuRelatorios(void) {
     int opcao;
@@ -14,7 +14,9 @@ int menuRelatorios(void) {
     printf("5 - Listar Professores Ordenados por Nome\n");
     printf("6 - Listar Professores Ordenados por Data de Nascimento\n");
     printf("7 - Listar Aniversariantes do Mes\n");
-    printf("8 - Buscar Aluno/Professor por Nome\n");
+    printf("8 - Buscar Aluno/Professor por Nome (minimo 3 letras)\n");
+    printf("9 - Listar Alunos Matriculados em Menos de 3 Disciplinas\n");
+    printf("10 - Listar Disciplinas que Extrapolam 40 Vagas\n");
     printf("Escolha uma opcao: ");
 
     if (!lerInt(&opcao)) {
@@ -224,7 +226,7 @@ void listarAniversariantesDoMes(Aluno listaAlunos[], int qtdAluno, Professor lis
 
 void buscarPessoaPorTexto(Aluno listaAlunos[], int qtdAluno, Professor listaProfessores[], int qtdProfessor) {
     char busca[TAM_NOME];
-    printf("Digite o nome ou parte dele para buscar: ");
+    printf("Digite o nome ou parte dele para buscar (minimo 3 letras): ");
     lerTexto(busca, TAM_NOME);
     formatarNome(busca);
 
@@ -254,4 +256,63 @@ void buscarPessoaPorTexto(Aluno listaAlunos[], int qtdAluno, Professor listaProf
         }
     }
     if (!achou) printf("Nenhum professor encontrado.\n");
+}
+
+// NOVO (Exigência do PDF): Alunos matriculados em menos de 3 disciplinas
+void listarAlunosMenosDeTresDisciplinas(Aluno listaAlunos[], int qtdAluno, Disciplina listaDisciplinas[], int qtdDisciplina) {
+    printf("\n--- ALUNOS MATRICULADOS EM MENOS DE 3 DISCIPLINAS ---\n");
+    int encontrados = 0;
+
+    for (int i = 0; i < qtdAluno; i++) {
+        if (listaAlunos[i].ativo) {
+            int contDisciplinas = 0;
+
+            for (int d = 0; d < qtdDisciplina; d++) {
+                if (listaDisciplinas[d].ativa) {
+                    for (int a = 0; a < listaDisciplinas[d].qtdAlunosMatriculados; a++) {
+                        if (listaDisciplinas[d].alunosMatriculados[a] == listaAlunos[i].matricula) {
+                            contDisciplinas++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (contDisciplinas < 3) {
+                printf("Matricula: %d | Nome: %-25s | Disciplinas Matriculadas: %d\n",
+                       listaAlunos[i].matricula, listaAlunos[i].nome, contDisciplinas);
+                encontrados++;
+            }
+        }
+    }
+
+    if (encontrados == 0) {
+        printf("Nenhum aluno encontrado matriculado em menos de 3 disciplinas.\n");
+    }
+}
+
+// NOVO (Exigência do PDF): Disciplinas que extrapolam 40 vagas (com nome do professor)
+void listarDisciplinasExtrapolamQuarentaVagas(Disciplina listaDisciplinas[], int qtdDisciplina, Professor listaProfessores[], int qtdProfessor) {
+    printf("\n--- DISCIPLINAS QUE EXTRAPOLAM 40 VAGAS ---\n");
+    int encontradas = 0;
+
+    for (int i = 0; i < qtdDisciplina; i++) {
+        if (listaDisciplinas[i].ativa && listaDisciplinas[i].vagas > 40) {
+            char nomeProf[50] = "Professor nao encontrado";
+            int idxProf = buscarProfessorPorMatricula(listaProfessores, qtdProfessor, listaDisciplinas[i].matriculaProfessor);
+            
+            if (idxProf != -1) {
+                strcpy(nomeProf, listaProfessores[idxProf].nome);
+            }
+
+            printf("Codigo: %d | Disciplina: %-20s | Semestre: %s | Prof: %-20s | Vagas: %d\n",
+                   listaDisciplinas[i].codigo, listaDisciplinas[i].nome, listaDisciplinas[i].semestre,
+                   nomeProf, listaDisciplinas[i].vagas);
+            encontradas++;
+        }
+    }
+
+    if (encontradas == 0) {
+        printf("Nenhuma disciplina cadastrada com mais de 40 vagas.\n");
+    }
 }
