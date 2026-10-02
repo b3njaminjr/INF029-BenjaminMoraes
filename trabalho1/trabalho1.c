@@ -89,10 +89,66 @@ int teste(int a)
     Não utilizar funções próprias de string (ex: strtok)   
     pode utilizar strlen para pegar o tamanho da string
  */
-int q1(char data[])
-{
-  int datavalida = 1;
 
+int mesValido(char data[]); {
+    char mesCop[3];
+    int mesValido = 1;
+    int tamStr;
+    int posIniMes;
+
+    for(int i = 0; data[i] != '/'; i++) {
+        posIniMes = i + 1;
+    }
+    posIniMes++;
+
+    for(int i = posIniMes; data[i] != '/'; i++) {
+        mesCop[i - posIniMes] = data[i];
+        tamStr++;
+    }
+
+    if(tamStr == 1 || tamStr == 2) {
+        mesCop[tamStr] = '\0';
+    }
+
+    for(int i = 0; mesCop[i] != '\0'; i++) {
+        if (tamStr == 1 && (mesCop[i] < '1' || mesCop[i] > '9')) {
+            mesValido = 0;
+        }
+        else {
+            if(tamStr == 2 && (mesCop[0] < '1' || mesCop[0] > '1' || mesCop[1] < '0' || mesCop[1] > '2')) {
+                mesValido = 0;
+            } 
+            else if(tamStr == 2 && mesCop[0] == '1' && (mesCop[1] < '0' || mesCop[1] > '2')) {
+                mesValido = 0;
+            }
+        }
+    }
+
+    if(mesValido)
+        return 1;
+    else
+        return 0;
+}
+
+int ehBissexto(int ano) {
+     
+}
+
+int diaValido(char data[]) {
+
+}
+
+int q1(char data[]) {
+
+    int datavalida = 1;
+
+    if(!mesValido(data)) {
+        datavalida = 0;
+    }
+
+    if(!diaValido(data)) {
+        datavalida = 0;
+    }
   //quebrar a string data em strings sDia, sMes, sAno
 
 
@@ -236,8 +292,8 @@ int q6(int numerobase, int numerobusca)
 
 
 DataQuebrada quebraData(char data[]){
-  DataQuebrada dq;
-  char sDia[3];
+    DataQuebrada dq;
+    char sDia[3];
 	char sMes[3];
 	char sAno[5];
 	int i; 
