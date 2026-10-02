@@ -1,6 +1,3 @@
-Aqui está a versão limpa do **`README.md`**, pronta para copiar e colar diretamente no seu GitHub:
-
-```markdown
 # Sistema de Gestão Escolar — Linguagem C
 
 ![Language](https://img.shields.io/badge/Language-C-blue.svg)
