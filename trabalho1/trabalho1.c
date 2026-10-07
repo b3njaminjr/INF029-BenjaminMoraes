@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include "trabalho1.h" 
 #include <stdlib.h>
+#include <string.h>
 
 DataQuebrada quebraData(char data[]);
 
@@ -89,75 +90,152 @@ int teste(int a)
     Não utilizar funções próprias de string (ex: strtok)   
     pode utilizar strlen para pegar o tamanho da string
  */
-
-int mesValido(char data[]); {
-    char mesCop[3];
-    int mesValido = 1;
-    int tamStr;
-    int posIniMes;
-
-    for(int i = 0; data[i] != '/'; i++) {
-        posIniMes = i + 1;
+int tamanhoString(char str[]) {
+    int tam = 0;
+    while (str[tam] != '\0') {
+        tam++;
     }
-    posIniMes++;
+    return tam;
+}
 
-    for(int i = posIniMes; data[i] != '/'; i++) {
-        mesCop[i - posIniMes] = data[i];
-        tamStr++;
+int ehBissexto(int ano) {
+    if (ano < 100) {
+        ano += 2000;
     }
-
-    if(tamStr == 1 || tamStr == 2) {
-        mesCop[tamStr] = '\0';
+    if ((ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0)) {
+        return 1;
     }
+    return 0;
+}
 
-    for(int i = 0; mesCop[i] != '\0'; i++) {
-        if (tamStr == 1 && (mesCop[i] < '1' || mesCop[i] > '9')) {
-            mesValido = 0;
-        }
-        else {
-            if(tamStr == 2 && (mesCop[0] < '1' || mesCop[0] > '1' || mesCop[1] < '0' || mesCop[1] > '2')) {
-                mesValido = 0;
-            } 
-            else if(tamStr == 2 && mesCop[0] == '1' && (mesCop[1] < '0' || mesCop[1] > '2')) {
-                mesValido = 0;
+int mesValido(char data[], char mesCop[], int *pPosBarra1, int *pPosBarra2) {
+    int tamStr = 0;
+    int p1 = -1, p2 = -1;
+
+    for (int i = 0; data[i] != '\0'; i++) {
+        if (data[i] == '/') {
+            if (p1 == -1) 
+                p1 = i;
+            else if (p2 == -1) { 
+                p2 = i; 
+                break; 
             }
         }
     }
 
-    if(mesValido)
-        return 1;
-    else
+    if (p1 == -1 || p2 == -1 || p2 <= p1 + 1) 
         return 0;
+
+    *pPosBarra1 = p1;
+    *pPosBarra2 = p2;
+
+    for (int i = p1 + 1; i < p2; i++) {
+        mesCop[tamStr++] = data[i];
+    }
+    mesCop[tamStr] = '\0';
+
+    if (tamStr != 1 && tamStr != 2) 
+        return 0;
+
+
+    int mesInt = 0;
+    if (tamStr == 1) {
+        mesInt = mesCop[0] - '0';
+    } else {
+        mesInt = (mesCop[0] - '0') * 10 + (mesCop[1] - '0');
+    }
+
+    if (mesInt < 1 || mesInt > 12) return 0;
+
+    return 1;
 }
 
-int ehBissexto(int ano) {
-     
+int anoValido(char data[], char anoCop[], int posBarra2, int *pAnoInt) {
+    int tamStr = 0;
+
+    for (int i = posBarra2 + 1; data[i] != '\0'; i++) {
+        anoCop[tamStr++] = data[i];
+    }
+    anoCop[tamStr] = '\0';
+
+    if (tamStr != 2 && tamStr != 4) return 0;
+
+    for (int i = 0; i < tamStr; i++) {
+        if (anoCop[i] < '0' || anoCop[i] > '9') return 0;
+    }
+
+    if (tamStr == 2) {
+        *pAnoInt = (anoCop[0] - '0') * 10 + (anoCop[1] - '0');
+    } else {
+        *pAnoInt = (anoCop[0] - '0') * 1000 + (anoCop[1] - '0') * 100 +
+                   (anoCop[2] - '0') * 10 + (anoCop[3] - '0');
+    }
+
+    return 1;
 }
 
-int diaValido(char data[]) {
 
+int diaValido(char data[], char diaCop[], int posBarra1, int mesInt, int anoInt) {
+    int tamStr = 0;
+
+    for (int i = 0; i < posBarra1; i++) {
+        diaCop[tamStr++] = data[i];
+    }
+    diaCop[tamStr] = '\0';
+
+    if (tamStr != 1 && tamStr != 2) return 0;
+
+    for (int i = 0; i < tamStr; i++) {
+        if (diaCop[i] < '0' || diaCop[i] > '9') return 0;
+    }
+
+    int diaInt = 0;
+    if (tamStr == 1) {
+        diaInt = diaCop[0] - '0';
+    } else {
+        diaInt = (diaCop[0] - '0') * 10 + (diaCop[1] - '0');
+    }
+
+    if (diaInt < 1) return 0;
+
+    int diasPorMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    if (mesInt == 2 && ehBissexto(anoInt)) {
+        diasPorMes[2] = 29;
+    }
+
+    if (diaInt > diasPorMes[mesInt]) return 0;
+
+    return 1;
 }
 
+// 5. Função Principal Q1
 int q1(char data[]) {
+    char sDia[3];
+    char sMes[3];
+    char sAno[5];
+    int posBarra1 = -1, posBarra2 = -1;
+    int anoInt = 0, mesInt = 0;
 
-    int datavalida = 1;
-
-    if(!mesValido(data)) {
-        datavalida = 0;
+    if(!mesValido(data, sMes, &posBarra1, &posBarra2)) {
+        return 0;
     }
 
-    if(!diaValido(data)) {
-        datavalida = 0;
+    if(strlen(sMes) == 1) {
+        mesInt = sMes[0] - '0';
+    } else {
+        mesInt = (sMes[0] - '0') * 10 + (sMes[1] - '0');
     }
-  //quebrar a string data em strings sDia, sMes, sAno
 
+    if (!anoValido(data, sAno, posBarra2, &anoInt)) {
+        return 0;
+    }
 
-  //printf("%s\n", data);
-
-  if (datavalida)
-      return 1;
-  else
-      return 0;
+    if(!diaValido(data, sDia, posBarra1, mesInt, anoInt)) {
+        return 0;
+    }
+  
+    return 1;
 }
 
 
@@ -176,30 +254,63 @@ int q1(char data[]) {
     4 -> datainicial > datafinal
     Caso o cálculo esteja correto, os atributos qtdDias, qtdMeses e qtdAnos devem ser preenchidos com os valores correspondentes.
  */
-DiasMesesAnos q2(char datainicial[], char datafinal[])
-{
 
-    //calcule os dados e armazene nas três variáveis a seguir
+DiasMesesAnos q2(char datainicial[], char datafinal[]) {
     DiasMesesAnos dma;
 
-    if (q1(datainicial) == 0){
-      dma.retorno = 2;
-      return dma;
-    }else if (q1(datafinal) == 0){
-      dma.retorno = 3;
-      return dma;
-    }else{
-      //verifique se a data final não é menor que a data inicial
-      
-      //calcule a distancia entre as datas
+    if (q1(datainicial) == 0) {
+        dma.retorno = 2;
+        return dma;
+    } 
+    else if (q1(datafinal) == 0) {
+        dma.retorno = 3;
+        return dma;
+    } else {
+        DataQuebrada dqIni = quebraData(datainicial);
+        DataQuebrada dqFin = quebraData(datafinal);
 
+        int anoInicial = dqIni.iAno;
+        int mesInicial = dqIni.iMes;
+        int diaInicial = dqIni.iDia;
 
-      //se tudo der certo
-      dma.retorno = 1;
-      return dma;
-      
+        int aFinal = dqFin.iAno;
+        int mFinal = dqFin.iMes;
+        int diaFinal = dqFin.iDia;
+
+        if (aFinal < anoInicial || 
+           (aFinal == anoInicial && mFinal < mesInicial) || 
+           (aFinal == anoInicial && mFinal == mesInicial && diaFinal < diaInicial)) {
+            dma.retorno = 4;
+            return dma;
+        }
+
+        int diasPorMes[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+        if (diaFinal >= diaInicial) {
+            dma.qtdDias = diaFinal - diaInicial;
+        } else {
+            int diasNoMesAnterior = diasPorMes[mesInicial];
+
+            if (mesInicial == 2 && ehBissexto(anoInicial)) {
+                diasNoMesAnterior = 29;
+            }
+
+            dma.qtdDias = (diaFinal + diasNoMesAnterior) - diaInicial;
+            mFinal--;
+        }
+
+        if (mFinal >= mesInicial) {
+            dma.qtdMeses = mFinal - mesInicial;
+        } else {
+            dma.qtdMeses = (mFinal + 12) - mesInicial;
+            aFinal--;
+        }
+
+        dma.qtdAnos = aFinal - anoInicial;
+
+        dma.retorno = 1;
+        return dma;
     }
-    
 }
 
 /*
@@ -208,14 +319,34 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
     Pesquisar quantas vezes um determinado caracter ocorre em um texto
  @entrada
     uma string texto, um caracter c e um inteiro que informa se é uma pesquisa Case Sensitive ou não. Se isCaseSensitive = 1, a pesquisa deve considerar diferenças entre maiúsculos e minúsculos.
-        Se isCaseSensitive != 1, a pesquisa não deve  considerar diferenças entre maiúsculos e minúsculos.
+    Se isCaseSensitive != 1, a pesquisa não deve considerar diferenças entre maiúsculos e minúsculos.
  @saida
     Um número n >= 0.
  */
-int q3(char *texto, char c, int isCaseSensitive)
-{
-    int qtdOcorrencias = -1;
 
+int q3(char *texto, char c, int isCaseSensitive) {
+    int qtdOcorrencias = 0;
+
+    if(isCaseSensitive == 1) {
+        for(int i = 0; texto[i] != '\0'; i++) {
+            if(texto[i] == c) {
+                qtdOcorrencias++;
+            }
+        }
+    } else {
+        if(c >= 'A' && c <= 'Z') {
+            c = c + 32;
+        }
+        for(int i = 0; texto[i] != '\0'; i++) {
+            char temp = texto[i];
+            if(temp >= 'A' && temp <= 'Z') {
+                temp = temp + 32;
+            }
+            if(temp == c) {
+                qtdOcorrencias++;
+            }
+        }
+    }
     return qtdOcorrencias;
 }
 
@@ -234,9 +365,25 @@ int q3(char *texto, char c, int isCaseSensitive)
         O retorno da função, n, nesse caso seria 1;
 
  */
-int q4(char *strTexto, char *strBusca, int posicoes[30])
-{
-    int qtdOcorrencias = -1;
+int q4(char *strTexto, char *strBusca, int posicoes[30]) {
+    int qtdOcorrencias = 0;
+    int tamBusca = strlen(strBusca);
+
+    if (tamBusca == 0) return 0; 
+
+    for(int i = 0; strTexto[i] != '\0'; i++) {
+        int contem = 1;
+        for(int j = 0; strBusca[j] != '\0' && contem; j++) {
+            if(strTexto[i + j] != strBusca[j]) {
+                contem = 0;
+            }
+        }
+        if(contem) {
+            posicoes[qtdOcorrencias * 2] = i + 1;
+            posicoes[qtdOcorrencias * 2 + 1] = i + tamBusca;
+            qtdOcorrencias++;
+        }
+    }
 
     return qtdOcorrencias;
 }
@@ -251,9 +398,8 @@ int q4(char *strTexto, char *strBusca, int posicoes[30])
     Número invertido
  */
 
-int q5(int num)
-{
-
+int q5(int num) {
+    
     return num;
 }
 
@@ -269,7 +415,7 @@ int q5(int num)
 
 int q6(int numerobase, int numerobusca)
 {
-    int qtdOcorrencias;
+    int qtdOcorrencias = 0;
     return qtdOcorrencias;
 }
 
@@ -285,7 +431,7 @@ int q6(int numerobase, int numerobusca)
 
  int q7(char matriz[8][10], char palavra[5])
  {
-     int achou;
+     int achou = 0;
      return achou;
  }
 
