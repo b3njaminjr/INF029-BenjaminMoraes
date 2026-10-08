@@ -399,8 +399,13 @@ int q4(char *strTexto, char *strBusca, int posicoes[30]) {
  */
 
 int q5(int num) {
-    
-    return num;
+    int invertido = 0;
+    while(num != 0) {
+        invertido = invertido * 10;
+        invertido = invertido + (num % 10);
+        num = num / 10;
+    }
+    return invertido;
 }
 
 /*
@@ -413,9 +418,56 @@ int q5(int num) {
     Quantidade de vezes que número de busca ocorre em número base
  */
 
-int q6(int numerobase, int numerobusca)
-{
+int q6(int numerobase, int numerobusca) {
     int qtdOcorrencias = 0;
+    int qtdVezesBase = 0;
+    int qtdeVezesBusca = 0;
+
+    int tempBase = numerobase;
+    int tempBusca = numerobusca;
+
+    while (tempBase != 0) {
+        qtdVezesBase++;
+        tempBase /= 10;
+    }
+
+    while (tempBusca != 0) {
+        qtdeVezesBusca++;
+        tempBusca /= 10;
+    }
+
+    if (qtdeVezesBusca > qtdVezesBase || qtdeVezesBusca == 0) {
+        return 0;
+    }
+
+    int numerobaseVet[qtdVezesBase];
+    int numerobuscado[qtdeVezesBusca];
+
+    tempBusca = numerobusca;
+    for (int i = qtdeVezesBusca - 1; i >= 0; i--) {
+        numerobuscado[i] = tempBusca % 10;
+        tempBusca /= 10;
+    }
+
+    tempBase = numerobase;
+    for (int i = qtdVezesBase - 1; i >= 0; i--) {
+        numerobaseVet[i] = tempBase % 10;
+        tempBase /= 10;
+    }
+
+    for (int i = 0; i <= qtdVezesBase - qtdeVezesBusca; i++) {
+        int j;
+        for (j = 0; j < qtdeVezesBusca; j++) {
+            if (numerobaseVet[i + j] != numerobuscado[j]) {
+                break;
+            }
+        }
+
+        if (j == qtdeVezesBusca) {
+            qtdOcorrencias++;
+        }
+    }
+
     return qtdOcorrencias;
 }
 
