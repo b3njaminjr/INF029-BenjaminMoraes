@@ -638,7 +638,7 @@ int mDiagonalSupDir(char matriz[8][10], char palavra[5], int lin, int col) {
 
 int mDiagonalInfEsq(char matriz[8][10], char palavra[5], int lin, int col) { // esta indo para baixo e para esquerda
     for (int i = 0; palavra[i] != '\0'; i++) {
-        if (lin + i >= 10 || col - i < 0 || matriz[lin + i][col - i] != palavra[i]) {
+        if (lin + i >= 8 || col - i < 0 || matriz[lin + i][col - i] != palavra[i]) {
             return 0;
         }
     }
@@ -647,7 +647,7 @@ int mDiagonalInfEsq(char matriz[8][10], char palavra[5], int lin, int col) { // 
 
 int mDiagonalInfDir(char matriz[8][10], char palavra[5], int lin, int col) {
     for (int i = 0; palavra[i] != '\0'; i++) {
-        if (lin + i >= 10 || col + i >= 10 || matriz[lin + i][col + i] != palavra[i]) {
+        if (lin + i >= 8 || col + i >= 10 || matriz[lin + i][col + i] != palavra[i]) {
             return 0;
         }
     }
