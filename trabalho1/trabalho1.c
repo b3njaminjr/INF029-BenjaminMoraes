@@ -238,22 +238,30 @@ int q4(char *strTexto, char *strBusca, int posicoes[30]) {
 
     char novoTexto[tamTexto + 1];
     char novaBusca[tamBusca + 1];
-    int map_orig[tamTexto + 1]; // Mapeia o índice limpo de volta para a posição real no strTexto
+    int map_orig[tamTexto + 1]; // Mapeia a posição real de caractere (1-based)
 
-    // 1. Limpa o texto base e guarda o mapeamento dos índices originais
+    // 1. Limpa o texto base e conta os caracteres corretamente (considerando acentos UTF-8)
     int n = 0;
+    int char_count = 0;
     for(int i = 0; i < tamTexto; i++) {
-        if(strTexto[i] != -61) { 
+        if(strTexto[i] == -61) {
+            i++; // Pula o segundo byte do acento
+            char_count++; // O caractere acentuado conta como 1 caractere
+        } else {
+            char_count++;
             novoTexto[n] = strTexto[i];
-            map_orig[n] = i;
+            map_orig[n] = char_count; // Salva a posição exata baseada em caracteres
             n++;
         }
     }
     novoTexto[n] = '\0';
 
+    // 2. Limpa a string de busca da mesma forma
     n = 0;
     for(int i = 0; i < tamBusca; i++) {
-        if(strBusca[i] != -61) {
+        if(strBusca[i] == -61) {
+            i++;
+        } else {
             novaBusca[n] = strBusca[i];
             n++;
         }
@@ -278,10 +286,10 @@ int q4(char *strTexto, char *strBusca, int posicoes[30]) {
             }
             
             if(contem == 1) {
-                // Utiliza o map_orig para traduzir os índices de volta para o texto original (contando a partir de 1)
-                posicoes[verifica_dois] = map_orig[i] + 1;                      // Início
+                // Utiliza diretamente os índices de caracteres mapeados
+                posicoes[verifica_dois] = map_orig[i];                    // Início
                 verifica_dois++;
-                posicoes[verifica_dois] = map_orig[i + tamBuscaLimpa - 1] + 1; // Fim
+                posicoes[verifica_dois] = map_orig[i + tamBuscaLimpa - 1]; // Fim
                 verifica_dois++;
                 qtdOcorrencias++;
             }
@@ -579,17 +587,16 @@ DataQuebrada quebraData(char data[]) {
     return dq;
 }
 
-int mHorizEsquerda(char matriz[8][10], char palavra[5], int lin, int col)  { // esta indo para esquerda
+int mHorizEsquerda(char matriz[8][10], char palavra[5], int lin, int col)  {
     for (int i = 0; palavra[i] != '\0'; i++) {
         if (col - i < 0 || matriz[lin][col - i] != palavra[i]) {
             return 0;
         }
     }
     return 1;
-
 }
 
-int mHorizDireita(char matriz[8][10], char palavra[5], int lin, int col) { // esta indo para direita
+int mHorizDireita(char matriz[8][10], char palavra[5], int lin, int col) {
     for (int i = 0; palavra[i] != '\0'; i++) {
         if (col + i >= 10 || matriz[lin][col + i] != palavra[i]) {
             return 0;
@@ -598,7 +605,7 @@ int mHorizDireita(char matriz[8][10], char palavra[5], int lin, int col) { // es
     return 1;
 }
 
-int mVertCima(char matriz[8][10], char palavra[5], int lin, int col) { // esta indo para cima
+int mVertCima(char matriz[8][10], char palavra[5], int lin, int col) {
     for (int i = 0; palavra[i] != '\0'; i++) {
         if (lin - i < 0 || matriz[lin - i][col] != palavra[i]) {
             return 0;
@@ -607,7 +614,7 @@ int mVertCima(char matriz[8][10], char palavra[5], int lin, int col) { // esta i
     return 1;
 }
 
-int mVertBaixo(char matriz[8][10], char palavra[5], int lin, int col) { // esta indo para baixo
+int mVertBaixo(char matriz[8][10], char palavra[5], int lin, int col) {
     for (int i = 0; palavra[i] != '\0'; i++) {
         if (lin + i >= 8 || matriz[lin + i][col] != palavra[i]) {
             return 0;
@@ -616,7 +623,7 @@ int mVertBaixo(char matriz[8][10], char palavra[5], int lin, int col) { // esta 
     return 1;
 }
 
-int mDiagonalSupEsq(char matriz[8][10], char palavra[5], int lin, int col) { // esta indo para cima e para esquerda
+int mDiagonalSupEsq(char matriz[8][10], char palavra[5], int lin, int col) {
     for (int i = 0; palavra[i] != '\0'; i++) {
         if (lin - i < 0 || col - i < 0 || matriz[lin - i][col - i] != palavra[i]) {
             return 0;
@@ -634,9 +641,7 @@ int mDiagonalSupDir(char matriz[8][10], char palavra[5], int lin, int col) {
     return 1;
 }
 
-
-
-int mDiagonalInfEsq(char matriz[8][10], char palavra[5], int lin, int col) { // esta indo para baixo e para esquerda
+int mDiagonalInfEsq(char matriz[8][10], char palavra[5], int lin, int col) {
     for (int i = 0; palavra[i] != '\0'; i++) {
         if (lin + i >= 8 || col - i < 0 || matriz[lin + i][col - i] != palavra[i]) {
             return 0;
