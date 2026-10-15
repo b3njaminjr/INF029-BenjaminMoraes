@@ -59,11 +59,11 @@ O trabalho é composto por 9 questões divididas entre funções de teste automa
 
 ```
 .
-├── BenjaminMoraes-2026100000-T1.c     # Implementação das questões Q1 a Q7
-├── BenjaminMoraes-2026100000-Q8.c     # Programa do Jogo da Velha
-├── BenjaminMoraes-2026100000-Q9.c     # Programa da Batalha Naval
-├── aluno2.h                            # Cabeçalho dos testes das funções
-└── corretor.c                          # Script principal de testes das funções Q1-Q7
+├── trabalho1.c         # Implementação das questões Q1 a Q7
+├── trabalho1.h         # Ficheiro de cabeçalho e protótipos
+├── corretor.c          # Script principal de testes das funções Q1-Q7
+├── q8(jogodavelha).c   # Programa do Jogo da Velha
+└── q9(batalhanaval).c  # Programa da Batalha Naval
 
 ```
 
@@ -71,32 +71,30 @@ O trabalho é composto por 9 questões divididas entre funções de teste automa
 
 ## ⚙️ Como Compilar e Executar
 
-### Pré-requisitos
+Certifica-te de que tens um compilador C (como o **GCC**) instalado no teu ambiente (`gcc --version`).
 
-* Compilador **GCC** instalado (`gcc --version`).
-
-### 1. Testar as Questões Q1 a Q7 (com o `corretor.c`)
+### 1. Testar as Questões Q1 a Q7
+Para compilar e executar a suite de testes automáticos do professor, utiliza os seguintes comandos no terminal:
 
 ```bash
-gcc corretor.c BenjaminMoraes-2026100000-T1.c -o teste_t1 -Wall
-./teste_t1
+gcc corretor.c trabalho1.c -o corretor -Wall
+./corretor
 
 ```
 
 ### 2. Executar o Jogo da Velha (Q8)
 
 ```bash
-gcc BenjaminMoraes-2026100000-Q8.c -o jogo_da_velha -Wall
-./jogo_da_velha
+gcc "q8(jogodavelha).c" -o jogodavelha -Wall
+./jogodavelha
 
 ```
 
 ### 3. Executar a Batalha Naval (Q9)
 
 ```bash
-gcc BenjaminMoraes-2026100000-Q9.c -o batalha_naval -Wall
-./batalha_naval
-
+gcc "q9(batalhanaval).c" -o batalhanaval -Wall
+./batalhanaval
 ```
 
 ---
