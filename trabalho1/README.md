@@ -71,7 +71,7 @@ O trabalho é composto por 9 questões divididas entre funções de teste automa
 
 ## ⚙️ Como Compilar e Executar
 
-Certifica-te de que tens um compilador C (como o **GCC**) instalado no teu ambiente (`gcc --version`).
+Certifica-se de que tem um compilador C (como o **GCC**) instalado no teu ambiente (`gcc --version`).
 
 ### 1. Testar as Questões Q1 a Q7
 Para compilar e executar a suite de testes automáticos do professor, utiliza os seguintes comandos no terminal:
