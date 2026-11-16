@@ -20,7 +20,8 @@ typedef struct est{
     int quantidade;
 } EstruturaAuxiliar;
 
-int existeEspacoAuxiliar(EstruturaAuxiliar vetorPrincipal, int posicao, int tamanho);
+void ordenarVetor(int vetor[], int tamanho);
+int ehPosicaoValida(int posicao);
 int criarEstruturaAuxiliar(int posicao, int tamanho);
 int inserirNumeroEmEstrutura(int posicao, int valor);
 int excluirNumeroDoFinaldaEstrutura(int posicao);
