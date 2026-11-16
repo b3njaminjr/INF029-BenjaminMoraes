@@ -14,6 +14,13 @@ typedef struct reg {
     struct reg *prox;
 } No;
 
+typedef struct est{
+    int *numeros;
+    int capacidade;
+    int quantidade;
+} EstruturaAuxiliar;
+
+int existeEspacoAuxiliar(EstruturaAuxiliar vetorPrincipal, int posicao, int tamanho);
 int criarEstruturaAuxiliar(int posicao, int tamanho);
 int inserirNumeroEmEstrutura(int posicao, int valor);
 int excluirNumeroDoFinaldaEstrutura(int posicao);
