@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "trabalho2.h"
 
 int menu();
 
 void dobrar(int *x);
 
-int menu()
-{
+int menu() {
     int op;
     printf("Digite as opção desejada\n");
     printf("0 - Sair\n");
@@ -21,25 +19,22 @@ int menu()
     return op;
 }
 
-int main()
-{
+int main() {
+
     inicializar();
     int op;
     int sair = 0;
     int ret;
-    while (!sair)
-    {
+    while (!sair) {
         op = menu();
-        switch (op)
-        {
-        case 0:
-        {
+        switch (op) {
+        case 0: {
             sair = 1;
             finalizar();
             break;
         }
-        case 1:
-        { //inserir
+        case 1: { 
+            //inserir
             //TODO
             ret = inserirNumeroEmEstrutura(5, 25);
             if (ret == SUCESSO)
@@ -57,36 +52,34 @@ int main()
             break;
         }
 
-        case 2:
-        { //excluir
+        case 2: { 
+            //excluir
             //TODO
             break;
         }
 
-        case 3:
-        { //recuperar dados estrutura auxiliar
+        case 3: { 
+            //recuperar dados estrutura auxiliar
             int posicao, retorno;
             printf("Qual a estrutura a ser listada (1..10)?");
             scanf("%d", &posicao);
 
             int qtd = getQuantidadeElementosEstruturaAuxiliar(posicao);
 
-            if (qtd == POSICAO_INVALIDA)
-            {
+            if (qtd == POSICAO_INVALIDA) {
                 printf("Posição inválida");
-            }
-            else
-            { // existe elemento
+            
+
+            } else {
+             // existe elemento
                 int vetorAux[qtd];
 
                 retorno = getDadosEstruturaAuxiliar(posicao, vetorAux);
 
-                if (retorno == SUCESSO)
-                {
+                if (retorno == SUCESSO) {
                     //imprimir para os dados para o usuário
                     int i = 0;
-                    for (; i < qtd; i++)
-                    {
+                    for (; i < qtd; i++) {
                         printf("%d", vetorAux[i]);
                     }
                 }
@@ -94,8 +87,8 @@ int main()
             break;
         }
 
-        case 10:
-        { //dobrar
+        case 10: { 
+            //dobrar
             //ler um numero
             int valor;
             scanf("%i", &valor);
@@ -109,8 +102,7 @@ int main()
             break;
         }
 
-        default:
-        {
+        default: {
             printf("opcao inválida\n");
         }
         }
